@@ -173,5 +173,6 @@ button {
     margin-left: 80px;
 }
 
-
-
+#abstract {
+    font-weight: bold;
+}
