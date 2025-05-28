@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - Mooyeali Code Den</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            background-color: #1a9be6;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .admin-actions {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #1a9be6;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .posts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .posts-table th,
+        .posts-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .posts-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .posts-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .posts-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-published {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-draft {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .actions {
+            white-space: nowrap;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 8px 16px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .back-link:hover {
+            background-color: #545b62;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Mooyeali Code Den - 管理后台</h1>
+        </div>
+        
+        <a href="/" class="back-link">← 返回网站首页</a>
+        
+        <div class="admin-actions">
+            <a href="/admin/new" class="btn btn-primary">新建文章</a>
+        </div>
+        
+        <div th:if="${posts}">
+            <h2>文章管理 (共 <span th:text="${#lists.size(posts)}"></span> 篇)</h2>
+            
+            <table class="posts-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>状态</th>
+                        <th>浏览次数</th>
+                        <th>创建时间</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="post : ${posts}">
+                        <td th:text="${post.id}">1</td>
+                        <td>
+                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}" target="_blank">文章标题</a>
+                        </td>
+                        <td>
+                            <span th:if="${post.isPublished}" class="status-published">已发布</span>
+                            <span th:unless="${post.isPublished}" class="status-draft">草稿</span>
+                        </td>
+                        <td th:text="${post.viewCount}">0</td>
+                        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</td>
+                        <td th:text="${post.updatedAt != null ? #temporals.format(post.updatedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
+                        <td class="actions">
+                            <a th:href="@{/admin/edit/{id}(id=${post.id})}" class="btn btn-primary">编辑</a>
+                            <form th:action="@{/admin/delete/{id}(id=${post.id})}" method="post" style="display: inline;" 
+                                  onsubmit="return confirm('确定要删除这篇文章吗？')">
+                                <button type="submit" class="btn btn-danger">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div th:unless="${posts}">
+            <p>暂无文章</p>
+        </div>
+    </div>
+</body>
+</html>
