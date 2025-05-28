@@ -1,0 +1,6 @@
+com/mooyeali/blog/config/DataInitializer.class
+com/mooyeali/blog/repository/BlogPostRepository.class
+com/mooyeali/blog/model/BlogPost.class
+com/mooyeali/blog/controller/BlogController.class
+com/mooyeali/blog/BlogApplication.class
+com/mooyeali/blog/service/BlogPostService.class

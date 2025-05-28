@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${post.id != null ? '编辑文章' : '新建文章'} + ' - 管理后台'">编辑文章 - 管理后台</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .admin-header {
+            background-color: #1a9be6;
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            height: 400px;
+            resize: vertical;
+        }
+        .form-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background-color: #1a9be6;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+        .form-actions {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 8px 16px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .back-link:hover {
+            background-color: #545b62;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1 th:text="${post.id != null ? '编辑文章' : '新建文章'}">编辑文章</h1>
+        </div>
+        
+        <a href="/admin" class="back-link">← 返回管理后台</a>
+        
+        <form th:action="@{/admin/save}" method="post" th:object="${post}">
+            <input type="hidden" th:field="*{id}">
+            <input type="hidden" th:field="*{createdAt}">
+            <input type="hidden" th:field="*{viewCount}">
+            
+            <div class="form-group">
+                <label for="title">文章标题 *</label>
+                <input type="text" id="title" th:field="*{title}" required maxlength="200" 
+                       placeholder="请输入文章标题">
+            </div>
+            
+            <div class="form-group">
+                <label for="summary">文章摘要 *</label>
+                <textarea id="summary" th:field="*{summary}" required maxlength="500" 
+                          placeholder="请输入文章摘要，简要描述文章内容"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="content">文章内容 *</label>
+                <textarea id="content" th:field="*{content}" required 
+                          placeholder="请输入文章内容，支持HTML标签"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="isPublished" th:field="*{isPublished}">
+                    <label for="isPublished">立即发布</label>
+                </div>
+                <small>取消勾选将保存为草稿</small>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">保存文章</button>
+                <a href="/admin" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

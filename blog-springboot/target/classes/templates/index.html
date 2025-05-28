@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mooyeali Code Den</title>
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <style>
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination a, .pagination span {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #020C16;
+        }
+        .pagination a:hover {
+            background-color: #1a9be6;
+            color: white;
+        }
+        .pagination .current {
+            background-color: #1a9be6;
+            color: white;
+        }
+        .search-form {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .search-form input[type="text"] {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ccc;
+        }
+        .search-form input[type="submit"] {
+            padding: 8px 16px;
+            background-color: #1a9be6;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .sidebar {
+            background-color: #CCD0D9;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .sidebar h3 {
+            background-color: #03151F;
+            color: #CCD0D9;
+            padding: 10px;
+            margin: 0 0 10px 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+        .sidebar a {
+            text-decoration: none;
+            color: #020C16;
+        }
+        .sidebar a:hover {
+            color: #1a9be6;
+        }
+        .admin-link {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #1a9be6;
+            color: white;
+            padding: 5px 10px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+        .post-meta {
+            color: #666;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="bigbox">
+        <a href="/admin" class="admin-link">管理后台</a>
+        
+        <h1>欢迎来到 Mooyeali Code Den 的世界</h1>
+        
+        <div class="search-form">
+            <form th:action="@{/search}" method="get">
+                <input type="text" name="keyword" placeholder="搜索文章...">
+                <input type="submit" value="搜索">
+            </form>
+        </div>
+        
+        <div id="box" style="display: flex;">
+            <div style="flex: 2; margin-right: 20px;">
+                <div th:if="${posts.hasContent()}">
+                    <div id="box1" th:each="post : ${posts.content}">
+                        <p><a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">文章标题</a></p>
+                        <p>
+                            <span id="abstract">摘要:</span>
+                            <span id="abstract_content" th:text="${post.summary}">文章摘要</span>
+                        </p>
+                        <div class="post-meta">
+                            <span th:text="'发布时间: ' + ${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                            <span th:text="' | 浏览次数: ' + ${post.viewCount}"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="pagination" th:if="${totalPages > 1}">
+                        <a th:if="${currentPage > 0}" th:href="@{/(page=${currentPage - 1})}">上一页</a>
+                        
+                        <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <a th:if="${i != currentPage}" th:href="@{/(page=${i})}" th:text="${i + 1}">1</a>
+                            <span th:if="${i == currentPage}" class="current" th:text="${i + 1}">1</span>
+                        </span>
+                        
+                        <a th:if="${currentPage < totalPages - 1}" th:href="@{/(page=${currentPage + 1})}">下一页</a>
+                    </div>
+                </div>
+                
+                <div th:unless="${posts.hasContent()}">
+                    <p>暂无文章</p>
+                </div>
+            </div>
+            
+            <div style="flex: 1;">
+                <div class="sidebar" th:if="${recentPosts}">
+                    <h3>最新文章</h3>
+                    <ul>
+                        <li th:each="post : ${recentPosts}">
+                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">文章标题</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar" th:if="${popularPosts}">
+                    <h3>热门文章</h3>
+                    <ul>
+                        <li th:each="post : ${popularPosts}">
+                            <a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}">文章标题</a>
+                            <span th:text="'(' + ${post.viewCount} + ' 次浏览)'"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>版权所有©Mooyeali</p>
+        </footer>
+    </div>
+</body>
+</html>
